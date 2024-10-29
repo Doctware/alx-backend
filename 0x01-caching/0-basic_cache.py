@@ -17,11 +17,11 @@ class BasicCache(BaseCaching):
         if key or item is noe the do nothing
         """
         if key is not None and item is not None:
-            self.cached_data[key] = item
+            self.cache_data[key] = item
 
     def get(self, key):
         """
         Return thr value on self.cached_data linked to key
         if key is none then do nothing
         """
-        return self.cached_data.get(key)
+        return self.cache_data.get(key)
