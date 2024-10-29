@@ -29,6 +29,9 @@ class FIFOCache(BaseCaching):
         if key is None and item is None:
             return
 
+        if key not in self.cache_data:
+            self.order.append(key)
+
         self.cache_data[key] = item
 
         if len(self.cache_data) > BaseCaching.MAX_ITEMS:
