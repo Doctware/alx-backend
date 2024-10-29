@@ -7,11 +7,6 @@ class BasicCache(BaseCaching):
     """ The class Basic cach that inherit from Base Cahing
     """
 
-    def __init__(self):
-        """ Inialiazing
-        """
-        super().__init__()
-
     def put(self, key, item):
         """
         The put methos:
