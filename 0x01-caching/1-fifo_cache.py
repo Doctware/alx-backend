@@ -26,7 +26,7 @@ class FIFOCache(BaseCaching):
         if lenght of cache data is > than BaseCahing.MAX_ITEMS
         remove the oldest item i.e perform FIFO
         """
-        if key is None and item is None:
+        if key is None or item is None:
             return
 
         if key not in self.cache_data:
