@@ -27,13 +27,14 @@ class MRUCache(BaseCaching):
         if key is None or item is None:
             return
 
-        if key not in self.cache_data:
-            self.usage_tracker.append(key)
+        if key in self.cache_data:
+            self.usage_tracker.remove(key)
 
         self.cache_data[key] = item
+        self.usage_tracker.append(key)
 
         if len(self.cache_data) > BaseCaching.MAX_ITEMS:
-            mru_item = self.usage_tracker.pop(1)
+            mru_item = self.usage_tracker.pop(-2)
             del self.cache_data[mru_item]
             print("DISCARD: {}".format(mru_item))
 
@@ -43,6 +44,8 @@ class MRUCache(BaseCaching):
         if key is None or not in cache_data return noen
         """
         if key is None or key not in self.cache_data:
-            return None 
+            return None
 
+        self.usage_tracker.remove(key)
+        self.usage_tracker.append(key)
         return self.cache_data[key]
