@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""This module implements a cache replacement system using LFU."""
+"""LFU Cache module implementing LFU with LRU as tiebreaker"""
 from base_caching import BaseCaching
 
 
@@ -25,15 +25,15 @@ class LFUCache(BaseCaching):
         if key is None or item is None:
             return
 
-        # Update frequency and usage order if key exists
+        # If the key already exists, update its value, frequency, and order
         if key in self.cache_data:
             self.usage_frequency[key] += 1
             self.usage_tracker.remove(key)
         else:
-            # Add new key with initial frequency
+            # New key with initial frequency
             self.usage_frequency[key] = 1
 
-        # Store item and update tracker
+        # Add/update the item in cache and usage tracker
         self.cache_data[key] = item
         self.usage_tracker.append(key)
 
