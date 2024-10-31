@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
-"""LFU Cache module implementing LFU with LRU as tiebreaker"""
+""" LFU Cache module implementing LFU with LRU as tiebreaker """
 from base_caching import BaseCaching
 
 
 class LFUCache(BaseCaching):
-    """LFUCache class that inherits from BaseCaching and implements
+    """ LFUCache class that inherits from BaseCaching and implements
     an LFU caching system with LRU tiebreaker.
     """
 
     def __init__(self):
-        """Initialize the cache with usage tracking structures."""
+        """ Initialize the cache with usage tracking structures. """
         super().__init__()
         self.usage_frequency = {}  # Tracks frequency of each key
         self.usage_tracker = []    # Tracks order for LRU among LFU items
 
     def put(self, key, item):
-        """Assign item to self.cache_data for the given key.
+        """ Assign item to self.cache_data for the given key.
 
         If either key or item is None, do nothing.
         If the number of items exceeds BaseCaching.MAX_ITEMS, remove
@@ -25,39 +25,36 @@ class LFUCache(BaseCaching):
         if key is None or item is None:
             return
 
-        # If the key already exists, update its value, frequency, and order
+        # If the key already exists, update its value and frequency
         if key in self.cache_data:
+            self.cache_data[key] = item
             self.usage_frequency[key] += 1
+            # Move key to end of usage tracker to reflect recent use
             self.usage_tracker.remove(key)
+            self.usage_tracker.append(key)
         else:
-            # New key with initial frequency
+            # Add new key and initialize its frequency
+            if len(self.cache_data) >= BaseCaching.MAX_ITEMS:
+                # Find the keys with the lowest frequency
+                min_frequency = min(self.usage_frequency.values())
+                min_freq_keys = [
+                    k for k in self.usage_tracker
+                    if self.usage_frequency[k] == min_frequency
+                ]
+                # Use LRU order by removing the first in min_freq_keys
+                lfu_key = min_freq_keys[0]
+                self.usage_tracker.remove(lfu_key)
+                del self.cache_data[lfu_key]
+                del self.usage_frequency[lfu_key]
+                print(f"DISCARD: {lfu_key}")
+
+            # Insert the new item
+            self.cache_data[key] = item
             self.usage_frequency[key] = 1
-
-        # Add/update the item in cache and usage tracker
-        self.cache_data[key] = item
-        self.usage_tracker.append(key)
-
-        # Enforce cache limit by removing least frequently used item
-        if len(self.cache_data) > BaseCaching.MAX_ITEMS:
-            # Find the minimum frequency
-            min_frequency = min(self.usage_frequency.values())
-
-            # Find all keys with this minimum frequency
-            min_freq_keys = [
-                k for k in self.usage_tracker
-                if self.usage_frequency[k] == min_frequency
-            ]
-
-            # Remove the first (least recently used)
-            # among minimum frequency keys
-            lfu_key = min_freq_keys[0]
-            self.usage_tracker.remove(lfu_key)
-            del self.cache_data[lfu_key]
-            del self.usage_frequency[lfu_key]
-            print("DISCARD:", lfu_key)
+            self.usage_tracker.append(key)
 
     def get(self, key):
-        """Retrieve value associated with key in self.cache_data.
+        """ Retrieve value associated with key in self.cache_data.
 
         If key is None or not in cache_data, return None.
         """
