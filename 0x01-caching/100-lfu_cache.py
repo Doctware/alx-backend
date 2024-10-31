@@ -5,7 +5,7 @@ from base_caching import BaseCaching
 
 class LFUCache(BaseCaching):
     """LFUCache class that inherits from BaseCaching and implements
-    an LFU caching system.
+    an LFU caching system with LRU tiebreaker.
     """
 
     def __init__(self):
@@ -16,10 +16,11 @@ class LFUCache(BaseCaching):
 
     def put(self, key, item):
         """Assign item to self.cache_data for the given key.
-        
+
         If either key or item is None, do nothing.
         If the number of items exceeds BaseCaching.MAX_ITEMS, remove
-        the least frequently used item from the cache.
+        the least frequently used item from the cache, with an LRU
+        tiebreaker for items with the same frequency.
         """
         if key is None or item is None:
             return
@@ -47,7 +48,8 @@ class LFUCache(BaseCaching):
                 if self.usage_frequency[k] == min_frequency
             ]
 
-            # Remove the first (least recently used) among minimum frequency keys
+            # Remove the first (least recently used)
+            # among minimum frequency keys
             lfu_key = min_freq_keys[0]
             self.usage_tracker.remove(lfu_key)
             del self.cache_data[lfu_key]
@@ -56,7 +58,7 @@ class LFUCache(BaseCaching):
 
     def get(self, key):
         """Retrieve value associated with key in self.cache_data.
-        
+
         If key is None or not in cache_data, return None.
         """
         if key is None or key not in self.cache_data:
