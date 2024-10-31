@@ -10,6 +10,7 @@ class LFUCache(BaseCaching):
         """ Initialize
         """
         super().__init__()
+        self.usage_frequency = {}
         self.usage_tracker = []
 
     def put(self, key, item):
@@ -28,15 +29,29 @@ class LFUCache(BaseCaching):
             return
 
         if key in self.cache_data:
+            self.usage_frequency[key] += 1
             self.usage_tracker.remove(key)
+        else:
+            self.usage_frequency[key] = 1
 
         self.cache_data[key] = item
         self.usage_tracker.append(key)
 
         if len(self.cache_data) > BaseCaching.MAX_ITEMS:
-            mru_item = self.usage_tracker.pop(-1)
-            del self.cache_data[mru_item]
-            print("DISCARD: {}".format(mru_item))
+            # find the minimum frequency among current items
+            min_frequency = min(self.usage_frequency.values())
+
+            min_freq_keys = [
+                    k
+                    for k in self.usage_tracker
+                    if self.usage_frequency[k] == min_frequency
+            ]
+
+            lfu_key = min_freq_keys[0]
+            self.usage_tracker.remove(lfu_key)
+            del self.cache_data[lfu_key]
+            del self.usage_frequency[lfu_key]
+            print("DISCARD: {}".format(lfu_key))
 
     def get(self, key):
         """
@@ -46,6 +61,8 @@ class LFUCache(BaseCaching):
         if key is None or key not in self.cache_data:
             return None
 
+        self.usage_frequency[key] += 1
         self.usage_tracker.remove(key)
         self.usage_tracker.append(key)
+
         return self.cache_data[key]
