@@ -22,7 +22,7 @@ def index():
     """
     this funtion simply output a text
     """
-    return render_template('1-index.html')
+    return "Hello world"
 
 
 if __name__ == '__main__':
