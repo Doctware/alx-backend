@@ -29,7 +29,7 @@ def index():
     """
     this funtion simply output a text
     """
-    return render_template('3-index.html', current_locale=get_locale())
+    return render_template('3-index.html')
 
 
 if __name__ == '__main__':
