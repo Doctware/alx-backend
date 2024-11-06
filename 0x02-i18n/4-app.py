@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """ The flak app """
 from flask import Flask, render_template, request
-from flask_babel import Babel, gettext as _
+from flask_babel import Babel, gettext
 from typing import Optional
 
 app = Flask(__name__)
