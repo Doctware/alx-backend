@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """ The flak app """
 from flask import Flask, render_template, request
-from flask_babel import Babel, gettext as _i
+from flask_babel import Babel, gettext as _
 from typing import Optional
 
 app = Flask(__name__)
@@ -29,7 +29,7 @@ def index():
     """
     this funtion simply output a text
     """
-    return render_template('3-index.html')
+    return render_template('3-index.html', current_locale=get_locale())
 
 
 if __name__ == '__main__':
