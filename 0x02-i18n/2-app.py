@@ -19,9 +19,9 @@ babel = Babel(app)
 
 
 @babel.localeselector
-def get_local() -> Optional[str]:
+def get_locale() -> Optional[str]:
     """ this function determin the best mach with supported language """
-    return request.accpt_languages.best_match(app.config['LANGUAGES'])
+    return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
 @app.route('/')
@@ -29,7 +29,7 @@ def index():
     """
     this funtion simply output a text
     """
-    return render_template('1-index.html')
+    return render_template('2-index.html')
 
 
 if __name__ == '__main__':
