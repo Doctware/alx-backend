@@ -10,7 +10,7 @@ class Config:
     """ the config class for babel """
     LANGUAGES = ["en", "fr"]
     BABEL_DEFAULT_LOCALE = "en"
-    BABE_DEFAULT_TIMEZONE = "UTC"
+    BABEL_DEFAULT_TIMEZONE = "UTC"
 
 
 app.config.from_object(Config)
@@ -22,7 +22,7 @@ def index():
     """
     this funtion simply output a text
     """
-    return "Hello world"
+    return render_template('1-index.html')
 
 
 if __name__ == '__main__':
